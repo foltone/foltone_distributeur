@@ -1,12 +1,17 @@
+ESX = exports["es_extended"]:getSharedObject()
 
-ESX = nil
+ESX.RegisterServerCallback("foltone_distributeur:checkMoney", function(source, cb, price)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    if xPlayer.getMoney() >= price then
+        xPlayer.removeMoney(price)
+        cb(true)
+    else
+        cb(false)
+    end
+end)
 
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-
-RegisterServerEvent('foltone:buy_distrib')
-AddEventHandler('foltone:buy_distrib', function(price, item)
+RegisterServerEvent("foltone_distributeur:giveItem")
+AddEventHandler("foltone_distributeur:giveItem", function(item)
     local xPlayer = ESX.GetPlayerFromId(source)
     xPlayer.addInventoryItem(item, 1)
-    xPlayer.removeMoney(price)
-    TriggerClientEvent('esx:showAdvancedNotification', source, 'Information!', '~g~Achat effectué!', '', 'CHAR_BANK_FLEECA', 9)
 end)
